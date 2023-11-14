@@ -9,6 +9,9 @@ int main() {
     // Create a ClockCalendar object with initial values
     ClockCalendar clockCalendar(false);
 
+    // Set a custom time and date
+    clockCalendar.setCustomTimeAndDate(10, 20, 2023, 10, 0, 0, false);
+
     while (true) {
         // Advance the clock by one second
         clockCalendar.advance();

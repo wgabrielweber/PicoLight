@@ -11,3 +11,5 @@ cmake -G "MinGW Makefiles" ..
 make
 
 ls
+
+cp ClockCalendar.uf2 /e/
