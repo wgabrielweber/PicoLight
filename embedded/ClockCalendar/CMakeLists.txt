@@ -25,7 +25,7 @@ add_executable(${PROJECT_NAME}
         Clock.cpp
         Calendar.cpp
         ClockCalendar.cpp
-        main.cpp
+        clkcldTest.cpp
 )
 
 # Link to pico_stdlib (gpio, time, etc. functions)
