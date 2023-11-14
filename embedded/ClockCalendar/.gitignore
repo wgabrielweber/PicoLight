@@ -1,8 +1,0 @@
-# Ignore gitBash.txt file
-gitBash.txt
-
-# Ignore hello_rtc file
-hello_rtc
-
-# Ignore the build folder
-build/
