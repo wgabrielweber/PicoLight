@@ -1,0 +1,13 @@
+Git Bash Lines to build the C/C++ Project into Raspberry Pi Pico
+
+cd /c/Users/wgabr/Pico_W/lightbar_project/embedded/ClockCalendar
+
+mkdir build
+
+cd /c/Users/wgabr/Pico_W/lightbar_project/embedded/ClockCalendar/build
+
+cmake -G "MinGW Makefiles" ..
+
+make
+
+ls
