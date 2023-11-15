@@ -8,17 +8,11 @@
 
 #include "BH1750FVI.hpp"
 
-const unsigned int LED_PIN = PICO_DEFAULT_LED_PIN;
-
-void init_led() {
-    gpio_init(LED_PIN);
-    gpio_set_function(LED_PIN, GPIO_FUNC_SIO);
-    gpio_put(LED_PIN, 1);
-}
-
 int main() {
     stdio_init_all();
-    init_led();
+
+    gpio_init(25);
+    gpio_set_dir(25, GPIO_OUT);
 
     BH1750FVI lightSensor(BH1750FVI::contHighRes);  // Using high-resolution mode as default
 
@@ -27,13 +21,19 @@ int main() {
     lightSensor.setSCLPin(17);
 
     while (1) {
-        lightSensor.begin();
-
-        uint16_t lightIntensity = lightSensor.GetLightIntensity();
-
-        printf("Light Intensity: %u lux\n", lightIntensity);
-
+        gpio_put(25, 1);
+        printf("LED ON!\n");
+        sleep_ms(10000);        
+    
+        gpio_put(25, 0); // Set pin 25 to low
+        printf("LED OFF!\n");
         sleep_ms(1000);
+
+        lightSensor.begin();
+        printf("Sensor initialized!\n");
+        uint16_t lightIntensity = lightSensor.GetLightIntensity();
+        printf("Light Intensity: %u lux\n", lightIntensity);
+        sleep_ms(500); // 0.5s delay
     }
 
     return 0;

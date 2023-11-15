@@ -17,7 +17,7 @@
 
 #include "BH1750FVI.hpp"
 
-BH1750FVI::BH1750FVI(deviceMode_t deviceMode) {
+BH1750FVI::BH1750FVI(deviceMode_t deviceMode) : m_deviceAddr(devAddr_L) {
 
 }
 
@@ -32,18 +32,20 @@ void BH1750FVI::setSCLPin(uint8_t sclPin) {
 void BH1750FVI::begin(void)
 {
     i2c_init(I2C_PORT, 100 * 1000);   // Set I2C clock frequency to 100 kHz
-    gpio_set_function(SDA, GPIO_FUNC_I2C);
-    gpio_set_function(SCL, GPIO_FUNC_I2C);
-    gpio_pull_up(SDA);
-    gpio_pull_up(SCL);
-    i2c_write_blocking(powerUp);      // Turn the driver On 
-   
+    printf("trying to Power up sensor...\n");
+    uint8_t powerUpByte = static_cast<uint8_t>(powerUp);
+    ::i2c_write_blocking(I2C_PORT, m_deviceAddr, &powerUpByte, 1, false); // Turn the driver On
+    sleep_ms(10);  // Add a delay after power up
+    printf("addressed and powered up...\n");
     if (m_addrPinUsed) {
         gpio_set_function(m_sdaPin, GPIO_FUNC_I2C);
         gpio_set_function(m_sclPin, GPIO_FUNC_I2C);
+        gpio_pull_up(m_sdaPin);
+        gpio_pull_up(m_sclPin);
         setAddress(m_deviceAddr); // Set the address
     }
     SetMode(m_deviceMode);        // Set the mode
+    printf("sensor powered up...\n");
 }
   
 void BH1750FVI::Sleep(void)
