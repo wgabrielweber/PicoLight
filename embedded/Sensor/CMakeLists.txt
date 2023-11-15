@@ -1,6 +1,6 @@
  # Author: Gabriel Weber Berwian < wgabrielweber@hotmail.com >
  # Institution: UFSC
- # Date: 12/11/2023
+ # Date: 14/11/2023
  # File: CMakeLists.txt
  
 # Set minimum required version of CMake
@@ -22,15 +22,14 @@ include_directories(include)
 
 # Tell CMake where to find the executable source file
 add_executable(${PROJECT_NAME}
-        LightSensor.cpp
-        sensorTest.cpp
+        BH1750FVI.cpp
+        testSensor.cpp
 )
 
 # Link to pico_stdlib (gpio, time, etc. functions)
 target_link_libraries(${PROJECT_NAME}
         pico_stdlib
-        hardware_rtc
-        pico_util
+        hardware_i2c
 )
 
 # enable usb output, disable uart output

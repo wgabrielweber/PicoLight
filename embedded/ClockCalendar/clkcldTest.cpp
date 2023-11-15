@@ -6,8 +6,6 @@
  * @institution UFSC
  */
 
-#include <stdio.h>
-#include "pico/stdlib.h"
 #include "ClockCalendar.hpp"
 
 /**

@@ -11,9 +11,6 @@
 
 #include <stdint.h>
 #include <stdio.h>
-#include "hardware/rtc.h"
-#include "pico/stdlib.h"
-#include "pico/util/datetime.h"
 
 /**
  * @struct clock_time_t
