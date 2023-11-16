@@ -29,54 +29,68 @@ class BH1750FVI {
 
 public:
 
-    typedef enum deviceAddr {
+    typedef enum eDeviceAddr {
         devAddr_L = 0x23,        // ADDR pin connected to GND
         devAddr_H = 0x5C         // ADDR pin connected to VCC
-     } deviceAddr_t;
+     } eDeviceAddr_t;
 
-    typedef enum deviceMode {
+    typedef enum eDeviceMode {
         contHighRes  = 0x10,     // continuos reading 0.5 lx resolution (120 ms)
         contHighRes2 = 0x11,     // continuos reading 1 lx resolution (120 ms)
         contLowRes   = 0x13,     // continuos reading 4 lx resolution (16 ms)
         oneHighRes   = 0x20,     // single read 0.5 lx resolution (120 ms)
         oneHighRes2  = 0x21,     // single read 1 lx resolution (120 ms)
         oneLowRes    = 0x23      // single read 4 lx resolution (16 ms)
-    } deviceMode_t;
+    } eDeviceMode_t;
 
-    typedef enum deviceState {
+    typedef enum eDeviceState {
         powerDown = 0x00,        // No active state
-        powerUp = 0x01,          // Waiting for measurement command
-        reset = 0x07             // Reset Data register command. Device must be active (powerUp)
-    } deviceState_t;
+        powerOn = 0x01,          // Waiting for measurement command
+        reset = 0x07             // Reset Data register command. Device must be active (powerOn)
+    } eDeviceState_t;
 
-    BH1750FVI(deviceMode_t deviceMode);
+    BH1750FVI(eDeviceMode_t deviceMode);
 
-    uint16_t GetLightIntensity(void);  
+    BH1750FVI(eDeviceAddr_t deviceAddr, eDeviceMode_t deviceMode);
 
     void begin(void);
 
-    void Sleep(void);
+    uint16_t getLux(void);  
 
-    void SetMode(deviceMode_t deviceMode);
+    void setMode(eDeviceMode_t deviceMode);
+
+    void Sleep(void);
 
     void Reset(void);    
 
-    void setAddress(deviceAddr_t deviceAddr);
-
     void setSDAPin(uint8_t sdaPin);
-    
+
     void setSCLPin(uint8_t sclPin);
+
+    uint8_t getSDAPin() const {
+        return m_sdaPin;
+    }
+
+    uint8_t getSCLPin() const {
+        return m_sclPin;
+    }
+
+    void setAddress(eDeviceAddr_t deviceAddr);
+
+    uint8_t getAddress() const {
+        return m_deviceAddr;
+    }
+
+private:
 
     void i2c_write_blocking(uint8_t Data); 
 
-private:
-    
     uint8_t m_sdaPin;
     uint8_t m_sclPin;
     uint8_t SDA;                //!< SDA pin of the device
     uint8_t SCL;                //!< SCL pin of the device
-    deviceAddr_t m_deviceAddr;  //!< I2C address of the device
-    deviceMode_t m_deviceMode;  //!< Mode of the device
+    eDeviceAddr_t m_deviceAddr;  //!< I2C address of the device
+    eDeviceMode_t m_deviceMode;  //!< Mode of the device
     bool m_addrPinUsed;         //!< Constructed with or without the address pin
 };
 
