@@ -1,6 +1,6 @@
 /**
  * @file testSensor.cpp
- * @brief Test program for the BHF1750FVI sensor
+ * @brief Test program for the BHF1750FVI library
  * @author Gabriel Weber Berwian <wgabrielweber@hotmail.com>
  * @date 14/11/2023
  * @institution UFSC
