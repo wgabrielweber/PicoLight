@@ -39,7 +39,7 @@ extern "C" {
         // counter is allowed to wrap over its maximum range (0 to 2**16-1)
         pwm_config config = pwm_get_default_config();
         // Set divider, reduces counter clock to sysclock/this value
-        pwm_config_set_clkdiv(&config, 4.f);
+        pwm_config_set_clkdiv(&config, 4.f); // 125 kHz
         // Load the configuration into our PWM slice, and set it running.
         pwm_init(slice_num, &config, true);
     }
