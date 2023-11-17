@@ -11,10 +11,6 @@
  *
 **/
 
-#include <stdio.h>
-#include <stdint.h>
-#include "pico/stdlib.h"
-#include "pico/time.h"
 #include "pwm_control.hpp"
 
 int main() {

@@ -14,6 +14,8 @@
 #ifndef PWM_CONTROL_HPP
 #define PWM_CONTROL_HPP
 
+#include <stdint.h>
+#include <stdio.h>
 #include "pico/stdlib.h"
 #include "hardware/pwm.h"
 #include "hardware/irq.h"
