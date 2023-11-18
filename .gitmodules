@@ -1,0 +1,3 @@
+[submodule "embedded/Actuator/PicoLED"]
+	path = embedded/Actuator/PicoLED
+	url = https://github.com/ForsakenNGS/PicoLED.git
