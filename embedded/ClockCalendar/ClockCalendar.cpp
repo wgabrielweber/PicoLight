@@ -12,10 +12,6 @@
 #include "pico/util/datetime.h"
 
 // ClockCalendar class members
-
-/**
- * @brief Default constructor for the ClockCalendar class.
- */
 ClockCalendar::ClockCalendar(bool rtc_initializer) : Clock(), Calendar() {
     if (rtc_initializer) {
         datetime_t rtc_time;
@@ -56,19 +52,12 @@ void ClockCalendar::setCustomTimeAndDate(int month, int day, int year, int hour,
     Calendar::setCalendar(month, day, year);
 }
 
+void ClockCalendar::readClockCalendar(calendar_date_t& readDate, clock_time_t& currentTime) {
+    Clock::readClock(currentTime);
+    Calendar::readCalendar(readDate); 
+}
 
-/**
- * @brief Constructor for the ClockCalendar class with specific values.
- * 
- * @param month Month.
- * @param day Day.
- * @param year Year.
- * @param hour Hour.
- * @param minute Minutes.
- * @param second Seconds.
- * @param is_pm am:pm indicator.
- * @param rtc_initializer Flag to initialize from RTC.
- */
+
 ClockCalendar::ClockCalendar(int month, int day, int year, int hour, int minute, int second, bool is_pm, bool rtc_initializer)
     : Clock(clock_time_t{static_cast<int8_t>(hour), static_cast<int8_t>(minute), static_cast<int8_t>(second), is_pm}),
       Calendar(calendar_date_t{static_cast<int16_t>(month), static_cast<int8_t>(day), static_cast<int8_t>(year)}) {
@@ -77,13 +66,6 @@ ClockCalendar::ClockCalendar(int month, int day, int year, int hour, int minute,
     }
 }
 
-/**
- * @brief Constructor for the ClockCalendar class with clock_time_t and calendar_date_t structs.
- * 
- * @param new_time New time to set.
- * @param new_date New date to set.
- * @param rtc_initializer Flag to initialize from RTC.
- */
 ClockCalendar::ClockCalendar(clock_time_t new_time, calendar_date_t new_date, bool rtc_initializer)
     : Clock(new_time), Calendar(new_date) {
     if (rtc_initializer) {
@@ -91,19 +73,14 @@ ClockCalendar::ClockCalendar(clock_time_t new_time, calendar_date_t new_date, bo
     }
 }
 
-/**
- * @brief Advances the clock by one second.
- */
 void ClockCalendar::advance()
 {
-    // First, advance the time
     Clock::advance();
 
     // Check if the time change affected the date (AM to PM or vice versa)
     bool was_pm = time_.is_pm;
     if ((was_pm) && (!time_.is_pm))
     {
-        // If so, advance the calendar
         Calendar::advance();
     }
 }

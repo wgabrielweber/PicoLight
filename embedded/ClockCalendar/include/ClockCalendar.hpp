@@ -24,7 +24,9 @@ public:
 
     ClockCalendar(clock_time_t new_time, calendar_date_t new_date, bool rtc_initializer);
 
-    void setCustomTimeAndDate(int month, int day, int year, int hour, int minute, int second, bool is_pm);    
+    void setCustomTimeAndDate(int month, int day, int year, int hour, int minute, int second, bool is_pm);
+
+    void readClockCalendar(calendar_date_t& readDate, clock_time_t& currentTime);    
 
     void advance();
 };

@@ -8,16 +8,6 @@
 
 #include "ClockCalendar.hpp"
 
-/**
- * @brief The main function for the ClockCalendar testing application.
- *
- * This function initializes a ClockCalendar object, sets a custom time and date
- * (which is currently commented out), and enters a loop where the clock is
- * advanced by one second in each iteration. The current time and date are read
- * and printed in each iteration with a one-second delay between iterations.
- *
- * @return 0 if the program executed successfully.
- */
 int main() {
     // Initialize standard I/O
     stdio_init_all();
@@ -37,14 +27,15 @@ int main() {
         // Get the current time and date
         clock_time_t currentTime;
         calendar_date_t currentDate;
-        clockCalendar.readClock(currentTime);
-        clockCalendar.readCalendar(currentDate);
+        //clockCalendar.readClock(currentTime);
+        //clockCalendar.readCalendar(currentDate);
+        clockCalendar.readClockCalendar(currentDate, currentTime);
 
         // Print the time and date
         printf("\r%02d/%02d/%04d %02d:%02d:%02d %s      ",
                currentDate.month, currentDate.day, currentDate.year,
                currentTime.hour, currentTime.min, currentTime.sec,
-               currentTime.is_pm ? "PM" : "AM");
+               currentTime.is_pm ? "PM \n" : "AM \n");
 
         // Delay for one second
         sleep_ms(1000);
