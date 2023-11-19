@@ -1,0 +1,15 @@
+Git Bash Lines to build the C/C++ Project into Raspberry Pi Pico
+
+cd /c/Users/wgabr/Pico_W/lightbar_project/embedded/Control/
+
+mkdir build
+
+cd /c/Users/wgabr/Pico_W/lightbar_project/embedded/Control/build
+
+cmake -G "MinGW Makefiles" ..
+
+make
+
+ls
+
+cp Control.uf2 /e/
