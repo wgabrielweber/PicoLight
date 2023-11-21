@@ -99,7 +99,7 @@ uint16_t BH1750FVI::getLux(void)
 
     i2c_read_blocking(I2C_PORT, m_deviceAddr, sensorData_half, 2, false);
     sensorData = (uint16_t)(sensorData_half[1] << 8 | sensorData_half[0]);
-    sleep_ms(180);
+    sleep_ms(180);      // time requested by the datasheet
     return sensorData / 1.2;
 }
 
