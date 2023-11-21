@@ -12,4 +12,4 @@ make
 
 ls
 
-cp Control.uf2 /e/
+cp ctrlTest.uf2 /e/
