@@ -23,7 +23,8 @@ set(PICO_CXX_ENABLE_RTTI 1)
 pico_sdk_init()
 
 include("../Actuator/PicoLed/PicoLed.cmake")
-include("../ClockCalendar/ClockCalendar.cmake")
+include("../Control/Control.cmake")
+include("../Logger/Logger.cmake")
 include("../Sensor/Sensor.cmake")
 
 # Add executable. Default name is the project name, version 0.1
@@ -40,15 +41,17 @@ target_link_libraries(main
         pico_stdlib
         hardware_i2c
         PicoLed
-        ClockCalendar
         Sensor
+        Control
+        Logger
 )
 
-# Add include directories for ClockCalendar and other components
+# Add include directories for other components
 target_include_directories(main PRIVATE
-    "../ClockCalendar/include"  # Add the path to ClockCalendar.hpp
-    "../Actuator/PicoLed"       # Add the path to PicoLed.hpp
-    "../Sensor/include"         # Add the path to BH1750FVI.hpp
+    "../Actuator/PicoLed"       # path to PicoLed.hpp
+    "../Sensor/include"         # path to BH1750FVI.hpp
+    "../Control/include"        # path to Control.hpp
+    "../Logger/include"         # path to Logger.hpp
 )
 
 pico_add_extra_outputs(main)
