@@ -11,7 +11,7 @@
  */
 
 #include "Control.hpp"
-#include "PicoLed.hpp"  // Include the necessary headers for PicoLED
+#include "PicoLed.hpp"  
 #include "BH1750FVI.hpp"
 
 #define LED_PIN 0
