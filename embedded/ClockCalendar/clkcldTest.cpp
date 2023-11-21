@@ -38,7 +38,7 @@ int main() {
                currentTime.is_pm ? "PM \n" : "AM \n");
 
         // Delay for one second
-        sleep_ms(1000);
+        sleep_ms(1000); // alterar para busy_wait_ms(1000) a biblioteca utilizada é #include <hardware/timer.h> hardware_timer
     }
 
     // The program should never reach this point
