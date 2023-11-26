@@ -2,116 +2,14 @@
 #include <windows.h>
 #include <string>
 
-class SerialPort {
-public:
-    SerialPort(const wchar_t* portName) : portHandle(INVALID_HANDLE_VALUE) {
-        // Open the serial port
-        portHandle = CreateFileW(
-            portName,
-            GENERIC_READ,
-            0,
-            0,
-            OPEN_EXISTING,
-            FILE_ATTRIBUTE_NORMAL,
-            0
-        );
+#include "login_manager.hpp"
+#include "serial_communication.hpp"
+#include "date_time_provider.hpp"
 
-        if (portHandle == INVALID_HANDLE_VALUE) {
-            DWORD error = GetLastError();
-            std::cerr << "Error opening serial port. Error code: " << error << std::endl;
-        }
-    }
+//Login Manager
+void Login() {
 
-    ~SerialPort() {
-        // Close the serial port
-        if (portHandle != INVALID_HANDLE_VALUE) {
-            CloseHandle(portHandle);
-        }
-    }
 
-    bool isOpen() const {
-        return (portHandle != INVALID_HANDLE_VALUE);
-    }
-
-    bool setParams() {
-        if (!isOpen()) {
-            std::cerr << "Serial port is not open." << std::endl;
-            return false;
-        }
-
-        // Set serial port parameters
-        DCB serialParams = { 0 };
-        serialParams.DCBlength = sizeof(serialParams);
-
-        if (!GetCommState(portHandle, &serialParams)) {
-            DWORD error = GetLastError();
-            std::cerr << "Error getting serial port state. Error code: " << error << std::endl;
-            return false;
-        }
-
-        serialParams.BaudRate = CBR_115200;  // Set the baud rate to 115200 bps
-        serialParams.ByteSize = 8;           // 8 data bits
-        serialParams.StopBits = ONESTOPBIT;  // 1 stop bit
-        serialParams.Parity = NOPARITY;      // No parity
-
-        if (!SetCommState(portHandle, &serialParams)) {
-            DWORD error = GetLastError();
-            std::cerr << "Error setting serial port state. Error code: " << error << std::endl;
-            return false;
-        }
-
-        return true;
-    }
-
-    void readData() {
-        if (!isOpen()) {
-            std::cerr << "Serial port is not open." << std::endl;
-            return;
-        }
-
-        // Read data from the serial port
-        const int bufferSize = 1024;
-        char buffer[bufferSize];
-
-        while (true) {
-            DWORD bytesRead;
-            if (ReadFile(portHandle, buffer, bufferSize, &bytesRead, NULL)) {
-                // Process the received data here
-                if (bytesRead > 0) {
-                    std::cout.write(buffer, bytesRead);
-                    std::cout.flush();
-                }
-            } else {
-                DWORD error = GetLastError();
-                std::cerr << "Error reading from serial port. Error code: " << error << std::endl;
-                break;
-            }
-        }
-    }
-
-private:
-    HANDLE portHandle;
-};
-
-class LoginManager {
-public:
-    LoginManager() {}
-
-    bool authenticate() const {
-        std::string username, password;
-
-        std::cout << "Enter username: ";
-        std::cin >> username;
-
-        std::cout << "Enter password: ";
-        std::cin >> password;
-
-        // Replace this with your actual authentication logic
-        return (username == "admin" && password == "password");
-    }
-};
-
-int main() {
     // Create an instance of LoginManager
     LoginManager loginManager;
 
@@ -121,20 +19,51 @@ int main() {
     }
 
     std::cout << "Login successful!" << std::endl;
+}
 
-    // Specify the COM port name (e.g., "COM1" or "COM2")
-    const wchar_t* portName = L"\\\\.\\COM29";
 
-    // Create an instance of SerialPort
-    SerialPort serialPort(portName);
 
-    // Check if the serial port is open
-    if (serialPort.isOpen()) {
-        // Set serial port parameters
-        if (serialPort.setParams()) {
-            // Run the serial port logic
-            serialPort.readData();
+int main() {
+
+    Login();
+    
+//Serial Communication
+
+    const char* portName = "\\\\.\\COM29";
+
+    SerialCommunication serial(portName);
+
+    if (!serial.Initialize()) {
+        std::cerr << "Error initializing serial communication\n";
+        return 1;
+    }
+    
+    // Writing loop
+    while (true) {
+
+        std::string currentTime = DateTimeProvider::getCurrentTime();
+        std::cout << "Current time and date (ISO 8601 format): " << currentTime << std::endl;
+        std::cout << "dataSentFlag: " << serial.dataSentFlag << ", errorFlag: " << serial.errorFlag << std::endl;
+
+        const char* message = currentTime.c_str();
+        serial.WriteToSerialPort(message, static_cast<DWORD>(currentTime.size()));
+
+        serial.dataSentFlag = true;
+
+        if (serial.dataSentFlag == true && serial.errorFlag == true) {
+            std::cerr << "Error writing to serial port. Exiting program." << std::endl;
+            break;
         }
+
+        Sleep(1000); // Adjust the sleep duration as needed
+    }
+
+    // Reading loop
+    while (true) {
+        serial.ReadFromSerialPort();
+        std::cout << "reading" << std::endl;
+        
+        Sleep(10000); // Adjust the sleep duration as needed
     }
 
     return 0;

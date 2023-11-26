@@ -1,0 +1,3 @@
+cd users/wgabr/C++_Projects/Cpp-projects/serial_com/
+
+g++ -o host_example host.cpp login_manager.cpp serial_communication.cpp date_time_provider.cpp

@@ -1,0 +1,7 @@
+cd C++_Projects/Cpp-projects/serial_com/
+
+g++ -o serialCom_example serial_test2.cpp serial_communication.cpp
+
+
+
+g++ -o host_example host.cpp login_manager.cpp serial_communication.cpp
