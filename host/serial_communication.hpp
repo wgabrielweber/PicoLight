@@ -17,9 +17,9 @@ public:
     void ReadFromSerialPort();
     bool dataSentFlag;
     bool errorFlag;
+    HANDLE serialHandle;
 
 private:
-    HANDLE serialHandle;
     DCB dcbSerialParams;
     COMMTIMEOUTS timeouts;
 

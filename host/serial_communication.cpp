@@ -27,7 +27,7 @@ bool SerialCommunication::Initialize() {
         CloseHandle(serialHandle);
         return false;
     }
-
+   
     return true;
 }
 
@@ -47,6 +47,10 @@ bool SerialCommunication::SetSerialParameters() {
     dcbSerialParams.ByteSize = 8;
     dcbSerialParams.StopBits = ONESTOPBIT;
     dcbSerialParams.Parity = NOPARITY;
+
+    // Set flow control
+    dcbSerialParams.fDtrControl = DTR_CONTROL_ENABLE;
+    dcbSerialParams.fRtsControl = RTS_CONTROL_ENABLE;
 
     return SetCommState(serialHandle, &dcbSerialParams);
 }
@@ -70,8 +74,8 @@ void SerialCommunication::WriteToSerialPort(const char* data, DWORD dataSize) {
     
     if (WriteFile(serialHandle, messageWithNewline.c_str(), messageWithNewline.size(), &bytesWritten, NULL)) {
         if (bytesWritten > 0) {
-            std::cout << "Data sent to serial port\n";
-            std::cout << messageWithNewline + "\n";
+//            std::cout << "Data sent to serial port\n";
+//            std::cout << messageWithNewline + "\n";
             dataSentFlag = true;  // Set data sent flag
         }
     } else {
@@ -79,23 +83,24 @@ void SerialCommunication::WriteToSerialPort(const char* data, DWORD dataSize) {
         errorFlag = true;  // Set error flag
     }
 
-    if (dataSentFlag == true && errorFlag == true) {
-       CloseHandle(serialHandle);
-    }
-
-    Sleep(25);
+    Sleep(10);
 }
 
 void SerialCommunication::ReadFromSerialPort() {
-    DWORD bytesRead;
-    char inByte;
 
-    if (ReadFile(serialHandle, &inByte, 1, &bytesRead, NULL)) {
+    const int bufferSize = 256; // Adjust the buffer size as needed
+    char buffer[bufferSize];
+    DWORD bytesRead;
+
+    if (ReadFile(serialHandle, buffer, bufferSize, &bytesRead, NULL)) {
         if (bytesRead > 0) {
-            // Handle the incoming byte
-            std::cout << inByte;
+            std::string receivedMessage(buffer, bytesRead);
+            std::cout << receivedMessage << std::endl;
         }
     } else {
         std::cerr << "Error reading from serial port\n";
+        errorFlag = true;  // Set error flag
     }
+
+    Sleep(10);
 }
