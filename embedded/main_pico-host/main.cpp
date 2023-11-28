@@ -26,25 +26,43 @@ int main()
 {
     stdio_init_all();
     sleep_ms(1000);
+    
     bool rtc_set = false;
 
-/*------------------------SERIAL COMMUNICATION---------------------------*/
+/*--------------SERIAL COMMUNICATION AND RTC INITIALIZATION--------------*/
 
     SerialCommunication serialCommunication;
     // Start listening for messages
     serialCommunication.startListening();
 
-/*------------------------------TIMESTAMP--------------------------------*/
+    // Get the received message
+    std::string receivedMessage = serialCommunication.getReceivedMessage();
+
+    // Split the string
+    std::string str_year = receivedMessage.substr(0,4);
+    std::string str_month = receivedMessage.substr(4,2);
+    std::string str_day = receivedMessage.substr(6,2);
+    std::string str_hour = receivedMessage.substr(8,2);
+    std::string str_min = receivedMessage.substr(10,2);
+    std::string str_sec = receivedMessage.substr(12,2);
+
+    // Convert the string into integers
+    int16_t year = std::stoi(str_year);
+    int8_t month = std::stoi(str_month);
+    int8_t day = std::stoi(str_day);
+    int8_t hour = std::stoi(str_hour);
+    int8_t minute = std::stoi(str_min);
+    int8_t second = std::stoi(str_sec);
 
     // Structure for working with the SDK rtc library
     datetime_t t = {
-            .year  = 2023,
-            .month = 11,
-            .day   = 19,
-            .dotw  = 0,
-            .hour  = 15,
-            .min   = 45,
-            .sec   = 00
+        .year  = year,
+        .month = month,
+        .day   = day,
+        .dotw  = 0,
+        .hour  = hour,
+        .min   = minute,
+        .sec   = second
     };
 
     // Start the RTC
@@ -54,6 +72,9 @@ int main()
     // clk_sys is >2000x faster than clk_rtc, so datetime is not updated immediately when rtc_get_datetime() is called.
     // tbe delay is up to 3 RTC clock cycles (which is 64us with the default clock settings)
     sleep_us(64);
+
+    // Reset the messageReceived flag
+    serialCommunication.resetMessageReceived();
 
 /*-------------------------ACTUATOR AND CONTROL---------------------------*/
 
@@ -84,7 +105,7 @@ int main()
     // Converting the base datetime_t members into the ISO8601 standard
     snprintf(firstTime, sizeof(firstTime), "%d-%02d-%02dT%02d:%02d:%02d",
         t.year, t.month, t.day, t.hour, t.min, t.sec);
-    printf("%s\n", firstTime);
+    printf("\nInitialization Timestamp: %s\n", firstTime);
 
     // parsing firstTime to Unix time to further calculate the active time
     std::tm tm_firstTime = {};
