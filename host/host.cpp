@@ -2,7 +2,7 @@
  * @file host.cpp
  * @brief Main file of the host system
  * @author Gabriel Weber Berwian <wgabrielweber@hotmail.com>
- * @date 28/11/2023
+ * @date 04/12/2023
  * @institution UFSC
  */
 

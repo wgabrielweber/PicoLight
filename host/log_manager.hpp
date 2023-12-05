@@ -1,4 +1,11 @@
-// log_manager.hpp
+ /**
+ * @file log_manager.hpp
+ * @brief log_manager header file
+ * @author Gabriel Weber Berwian <wgabrielweber@hotmail.com>
+ * @date 04/12/2023
+ * @institution UFSC
+ */
+
 #ifndef LOG_MANAGER_HPP
 #define LOG_MANAGER_HPP
 

@@ -1,4 +1,11 @@
-// log_manager.cpp
+ /**
+ * @file log_manager.cpp
+ * @brief log_manager implementation file
+ * @author Gabriel Weber Berwian <wgabrielweber@hotmail.com>
+ * @date 04/12/2023
+ * @institution UFSC
+ */
+
 #include "log_manager.hpp"
 #include <iostream>
 #include <fstream>
