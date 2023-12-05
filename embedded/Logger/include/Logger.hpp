@@ -17,6 +17,7 @@
 #include <iostream>
 #include <string>
 #include <cstdarg>
+#include <cstdint>
 
 class Node {
 public:
@@ -30,6 +31,8 @@ class Logger {
 private:
     Node* front;
     Node* rear;
+    uint32_t logCount;
+    const uint32_t MAX_LOGS = 1500;
 
 public:
     Logger();

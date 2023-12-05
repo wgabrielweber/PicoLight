@@ -33,6 +33,17 @@ void Logger::log(const char* format, ...) {
         rear->next = newNode;
         rear = newNode;
     }
+    
+    // Increment the log count
+    logCount++;
+
+    // Check if the maximum log limit is reached
+    if (logCount > MAX_LOGS) {
+        // Dequeue logs until the log count is within the limit
+        while (logCount > MAX_LOGS) {
+            dequeue();
+        }
+    }
 }
 
 std::string Logger::dequeue() {
@@ -51,6 +62,9 @@ std::string Logger::dequeue() {
 
     delete temp;
 
+    // Decrement the log count
+    logCount--;
+
     return message;
 }
 
@@ -62,4 +76,5 @@ Logger::~Logger() {
     }
 
     rear = nullptr;
+    logCount = 0;
 }

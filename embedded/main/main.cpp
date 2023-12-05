@@ -10,17 +10,18 @@
  *  Embedded System Main File
  */
 
-#include <stdio.h>
-#include "pico/stdlib.h"
+//#include <stdio.h>
+//#include "pico/stdlib.h"
 
-#include <PicoLed.hpp>
-#include "PicoLed.hpp"
-#include "BH1750FVI.hpp"
+//#include <PicoLed.hpp>
+//#include "PicoLed.hpp"
+//#include "BH1750FVI.hpp"
+//#include "hardware/rtc.h"
+//#include "pico/stdlib.h"
+//#include "pico/util/datetime.h"
 #include "Control.hpp"
 #include "Logger.hpp"
-#include "hardware/rtc.h"
-#include "pico/stdlib.h"
-#include "pico/util/datetime.h"
+
 
 #define LED_PIN 0
 #define LED_LENGTH 5
@@ -30,7 +31,7 @@ int main()
     stdio_init_all();
     sleep_ms(1000);
 
-    // Structure for working with the given rtc
+    // Structure for working with the SDK rtc library
     datetime_t t = {
             .year  = 2023,
             .month = 11,
@@ -50,7 +51,7 @@ int main()
     sleep_us(64);
 
     // Initialize your LED strip, sensor, and other components
-    // Replace the placeholder values with your actual initialization parameters
+    // Replace the placeholder values with the actual initialization parameters
     auto ledStrip = PicoLed::addLeds<PicoLed::WS2812B>(pio0, 0, LED_PIN, LED_LENGTH, PicoLed::FORMAT_GRB);
     BH1750FVI lightSensor(BH1750FVI::devAddr_L, BH1750FVI::contHighRes);
     lightSensor.setSDAPin(16);
@@ -87,6 +88,10 @@ int main()
 
     std::vector<std::string> logs;  // Container to store logs
 
+    // Auxiliar variables for a new log
+    bool newLog;
+    uint8_t newSec = 100; // initiates with an invalid second
+
     // Main loop
     while (1) {    
 
@@ -104,12 +109,11 @@ int main()
         printf("%s\n", timestampBuffer);
 
         // Time based condition to create a new log
-        bool newLog;
         newLog = t.sec == 0 || t.sec == 15 || t.sec == 30 || t.sec == 45;
-        if (newLog == true) {
+        if (newLog == true && newSec != t.sec ) {
             // Adding logs to the container
             logs.push_back(std::string(timestampBuffer) + " : Light Intensity: " + std::to_string(controller.getLightIntensity()) + " lux : Brightness: " + std::to_string(ledStrip.getBrightness()));
-
+            newSec = t.sec;
         }
 
         // Print the size of the logs vector

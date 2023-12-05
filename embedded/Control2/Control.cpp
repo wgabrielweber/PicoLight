@@ -35,28 +35,28 @@ void Control::adjustBrightness() {
     uint8_t actualBrightness = ledStrip_.getBrightness();
 
     if (LightIntensity_ > targetUpper) {
-        if (actualBrightness > 0) {
+        if (actualBrightness >= 0) {
             if (abs(LightIntensity_ - targetUpper) > 5000) {
             // Set LED strip brightness
-            newBrightness = actualBrightness -5;
+            newBrightness = std::min(255, std::max(0, actualBrightness - 5));
             ledStrip_.setBrightness(newBrightness);
             ledStrip_.show();
         } else {
-            newBrightness = --actualBrightness;
+            newBrightness = std::min(255, std::max(0, actualBrightness - 1));
             ledStrip_.setBrightness(newBrightness);
             ledStrip_.show();    
         }
         }
     }
     if (LightIntensity_ < targetLower) {
-        if (actualBrightness < 255) {
+        if (actualBrightness <= 255) {
             if (abs(LightIntensity_ - targetLower) > 5000) {
                 // Set LED strip brightness
-                newBrightness = actualBrightness + 5;
+                newBrightness = std::min(255, std::max(0, actualBrightness + 5));
                 ledStrip_.setBrightness(newBrightness);
                 ledStrip_.show();
             } else {
-                newBrightness = ++actualBrightness;
+                newBrightness = std::min(255, std::max(0, actualBrightness + 1));
                 ledStrip_.setBrightness(newBrightness);
                 ledStrip_.show();
             }

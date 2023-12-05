@@ -55,7 +55,7 @@ public:
 
     void begin(void);
 
-    uint16_t getLux(void);  
+    uint16_t getLux(); 
 
     void setMode(eDeviceMode_t deviceMode);
 

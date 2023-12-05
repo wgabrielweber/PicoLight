@@ -51,7 +51,7 @@ void BH1750FVI::setMode(eDeviceMode_t deviceMode)
 
 void BH1750FVI::begin(void)
 {
-    printf("SDA Pin: %d, SCL Pin: %d\n, Address: %x\n, Mode: %x\n", m_sdaPin, m_sclPin, m_deviceAddr, m_deviceMode);
+    printf("SDA Pin: %d, SCL Pin: %d, Address: %x, Mode: %x\n", m_sdaPin, m_sclPin, m_deviceAddr, m_deviceMode);
 
     // Set I2C pins
     gpio_set_function(getSDAPin(), GPIO_FUNC_I2C);
@@ -92,16 +92,30 @@ void BH1750FVI::Reset(void)
     i2c_write_blocking(reset);   // Reset
 }
 
-uint16_t BH1750FVI::getLux(void)
+uint16_t BH1750FVI::getLux()
 {
+    // continuous modes
+    if ((m_deviceMode & 0x10) && (m_deviceMode != m_deviceMode)) {
+        setMode(m_deviceMode);
+    }
+    // one shot modes
+    if (m_deviceMode & 0x20) {
+        setMode(m_deviceMode);
+    }
+    
+    // earlier measurements return previous reading
+    sleep_ms((m_deviceMode == 0x13 || m_deviceMode == 0x23) ? 24 : 180);
+
     uint8_t sensorData_half[2];
     uint16_t sensorData;
 
     i2c_read_blocking(I2C_PORT, m_deviceAddr, sensorData_half, 2, false);
     sensorData = (uint16_t)(sensorData_half[1] << 8 | sensorData_half[0]);
-    sleep_ms(180);      // time requested by the datasheet
-    return sensorData / 1.2;
+
+    float factor = (m_deviceMode == 0x11 || m_deviceMode == 0x21) ? 2.0 : 1.0;
+    return static_cast<uint16_t>(sensorData / (1.2 * factor));
 }
+
 
 void BH1750FVI::i2c_write_blocking(uint8_t Data)
 {

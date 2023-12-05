@@ -12,6 +12,8 @@
 
 #include <sstream>
 #include <iomanip>
+#include <tusb.h>
+#include <vector>
 
 #include "hardware/rtc.h"
 #include "pico/util/datetime.h"
@@ -76,7 +78,8 @@ int main()
     // Reset the messageReceived flag
     serialCommunication.resetMessageReceived();
 
-/*-------------------------ACTUATOR AND CONTROL---------------------------*/
+/*-----------------------------------------------------------------------*/
+/*--------------------------ACTUATOR AND CONTROL-------------------------*/
 
     // Replace the placeholder values with the actual initialization parameters
     auto ledStrip = PicoLed::addLeds<PicoLed::WS2812B>(pio0, 0, LED_PIN, LED_LENGTH, PicoLed::FORMAT_GRB);
@@ -98,6 +101,7 @@ int main()
     // Set the target light intensity
     controller.setTargetLightIntensity(7250);  // Set the target light intensity
 
+/*-----------------------------------------------------------------------*/
 /*-------------------------------LOGGER----------------------------------*/
 
     // buffer for the firstTime (used to get the active time)
@@ -125,12 +129,18 @@ int main()
     bool newLog;
     uint8_t newSec = 100; // initiates with an invalid second
 
+/*-----------------------------------------------------------------------*/
+
     // Main loop
     while (1) {    
 
-        // Retrieve and print the light intensity
+/*--------------------------------CONTROL--------------------------------*/
+
+        // adjustBrightness is the function from the control class responsible
+        // to get the current light intensity and adjust the LED brightness
         controller.adjustBrightness();
-        printf("\n\rLight Intensity: %u lux    Brightness: %u     ", controller.getLightIntensity(), ledStrip.getBrightness());
+
+/*---------------------------------TIME----------------------------------*/
 
         // get a new date and time for the timestamp
         rtc_get_datetime(&t);
@@ -138,7 +148,7 @@ int main()
         // Converting the base datetime_t members into the ISO8601 standard
         snprintf(timestampBuffer, sizeof(timestampBuffer), "%d-%02d-%02dT%02d:%02d:%02d",
              t.year, t.month, t.day, t.hour, t.min, t.sec);
-        printf("%s\n", timestampBuffer);
+//        printf("%s\n", timestampBuffer);
 
         // parsing timestampBuffer to Unix time to calculate the active time
         std::tm tm_timestampBuffer = {};
@@ -149,21 +159,24 @@ int main()
         // Calculate the active time in seconds
         int diffSeconds = unixtime_timestampBuffer - unixtime_firstTime;
 
+/*-------------------------------LOGGER----------------------------------*/
+
         // Time based condition to create a new log
         newLog = t.sec == 0 || t.sec == 15 || t.sec == 30 || t.sec == 45;
         if (newLog == true && newSec != t.sec ) {
             // Adding logs to the container
-            logs.push_back(std::string(timestampBuffer) + " : Light Intensity: " + std::to_string(controller.getLightIntensity())
-                 + " lux : Brightness: " + std::to_string(ledStrip.getBrightness()) + " : Active Time: " + std::to_string(diffSeconds) + " seconds");
+            logs.push_back(std::string(timestampBuffer) + " | " + std::to_string(controller.getLightIntensity())
+                 + " | " + std::to_string(ledStrip.getBrightness()) + " | " + std::to_string(diffSeconds) + "\n");
             newSec = t.sec;
 
+        // Printing Results
+        printf("%s | %u | %u | %d \n", timestampBuffer, controller.getLightIntensity(), ledStrip.getBrightness(), diffSeconds);
+
             // Print all logs
-            for (const auto& log : logs) {
-                printf("%s\n", log.c_str());
+//            for (const auto& log : logs) {
+//                printf("%s\n", log.c_str());
+//            }
         }
-
-        }
-
         // Sleep between iterations
         sleep_ms(10);
     }

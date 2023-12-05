@@ -20,7 +20,6 @@
 #include <PicoLed.hpp>
 #include "pico/stdlib.h"
 #include "BH1750FVI.hpp"
-#include "pico/stdlib.h"
 
 class Control {
 public:
