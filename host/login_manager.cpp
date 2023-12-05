@@ -1,3 +1,11 @@
+ /**
+ * @file login_manager.cpp
+ * @brief login_manager implementation file
+ * @author Gabriel Weber Berwian <wgabrielweber@hotmail.com>
+ * @date 28/11/2023
+ * @institution UFSC
+ */
+
 #include "login_manager.hpp"
 
 bool LoginManager::authenticate() const {

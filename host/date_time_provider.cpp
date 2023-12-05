@@ -1,3 +1,11 @@
+ /**
+ * @file dade_time_provider.cpp
+ * @brief date_time_provider implementation file
+ * @author Gabriel Weber Berwian <wgabrielweber@hotmail.com>
+ * @date 28/11/2023
+ * @institution UFSC
+ */
+
 #include "date_time_provider.hpp"
 
 std::string DateTimeProvider::getCurrentTime() {

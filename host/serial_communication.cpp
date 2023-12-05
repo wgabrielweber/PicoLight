@@ -1,3 +1,11 @@
+ /**
+ * @file serial_communication.cpp
+ * @brief Serial Communication implementation file
+ * @author Gabriel Weber Berwian <wgabrielweber@hotmail.com>
+ * @date 28/11/2023
+ * @institution UFSC
+ */
+
 #include "serial_communication.hpp"
 
 SerialCommunication::SerialCommunication(const char* port)
@@ -79,14 +87,14 @@ void SerialCommunication::WriteToSerialPort(const char* data, DWORD dataSize) {
             dataSentFlag = true;  // Set data sent flag
         }
     } else {
-        std::cerr << "Error writing to serial port\n";
+//        std::cerr << "Error writing to serial port\n";
         errorFlag = true;  // Set error flag
     }
 
     Sleep(10);
 }
 
-void SerialCommunication::ReadFromSerialPort() {
+void SerialCommunication::ReadFromSerialPort(Logger& logger) {
 
     const int bufferSize = 256; // Adjust the buffer size as needed
     char buffer[bufferSize];
@@ -95,7 +103,10 @@ void SerialCommunication::ReadFromSerialPort() {
     if (ReadFile(serialHandle, buffer, bufferSize, &bytesRead, NULL)) {
         if (bytesRead > 0) {
             std::string receivedMessage(buffer, bytesRead);
-            std::cout << receivedMessage << std::endl;
+//            std::cout << receivedMessage << std::endl;
+            
+            // Loggin the received message to the logger
+            logger.logMessage(receivedMessage);
         }
     } else {
         std::cerr << "Error reading from serial port\n";

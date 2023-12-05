@@ -1,8 +1,17 @@
+ /**
+ * @file serial_communication.hpp
+ * @brief Serial Communication header file
+ * @author Gabriel Weber Berwian <wgabrielweber@hotmail.com>
+ * @date 28/11/2023
+ * @institution UFSC
+ */
+
 #ifndef SERIAL_COMMUNICATION_HPP
 #define SERIAL_COMMUNICATION_HPP
 
 #include <iostream>
 #include <windows.h>
+#include "logger.hpp"
 
 //#define MAX_MESSAGE_LENGTH 14
 
@@ -14,7 +23,7 @@ public:
     bool Initialize();
 
     void WriteToSerialPort(const char* data, DWORD dataSize);
-    void ReadFromSerialPort();
+    void ReadFromSerialPort(Logger& logger);
     bool dataSentFlag;
     bool errorFlag;
     HANDLE serialHandle;
